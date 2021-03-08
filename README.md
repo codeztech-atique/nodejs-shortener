@@ -32,4 +32,4 @@ AWS API Getway <br />
 https://2ocgdhnuwg.execute-api.ap-south-1.amazonaws.com/production
 
 **API Documention URL** <br />
-
+https://documenter.getpostman.com/view/2063706/Tz5m7K1y
