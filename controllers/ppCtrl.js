@@ -47,17 +47,19 @@ exports.getAllInformation = (req, res, next) => {
   // console.log(req.body);
   ppContent.find({}, async( err, resp) => {
     if (Object.keys(resp).length) {
-      var filterObj = {};
+      var filterObj = [];
       resp.forEach((e) => {
-        filterObj['url'] = e.url;
-        filterObj['shortedUrl'] = e.shortedUrl;
-        filterObj['createdAt'] = e.createdAt;
-        filterObj['updatedAt'] = e.updatedAt;
+        filterObj.push({
+          url: e.url,
+          shortedUrl: e.shortedUrl,
+          createdAt: e.createdAt,
+          updatedAt: e.updatedAt
+        })
       });
       res.send({
         status: 200,
         message: 'Success !!',
-        data: resp
+        data: filterObj
       });
     } else if(err) {
       res.send({
