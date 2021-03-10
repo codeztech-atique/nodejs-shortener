@@ -1,45 +1,30 @@
 const mongoose = require('mongoose');
+const cryptoRandomString = require('crypto-random-string');
 const chalk = require('chalk');
-const shortUrl = require('node-url-shortener');
+
 require('../models/urlshotner');
 const ppContent = mongoose.model('ppcontent');
 
 exports.urlShortener = (req, res, next) => {
   // console.log(chalk.bgYellowBright("---------------- UrlShorter Information Submitted ----------------"));
   // console.log(req.body);
-  shortUrl.short(req.body.url, function(err, url) {
-    if(!err) {
-      req.body.shortedUrl = url;
-      var urlShorten = new ppContent(req.body);
-      urlShorten.save().then(resp => {
-        var istDateCreatedAt = new Date((resp.createdAt).toString());
-        var istDateUpdatedAt = new Date(resp.updatedAt);
-        res.send({
-          message: 'UrlShorted Information Saved in database !!',
-          status: 201,
-          data: {
-            "originalUrl": resp.url,
-            "shortedUrl": resp.shortedUrl,
-            "createdAt": istDateCreatedAt,
-            "updateAt": istDateUpdatedAt
-          }
-        })
-      }).catch(err => {
-        res.status(400).send({
-          message: 'Update Failed !!',
-          status: 400,
-          err: err
-        });
-      });
-    } else {
-      res.status(400).send({
-        message: 'Update Failed !!',
-        status: 400,
-        err: err
-      });
-    }
+  // var totalCombination = req.body.url+"/"+req.body.description;
+  var resD = cryptoRandomString({length: 10, type: 'base64'}); //characters: totalCombination
+  req.body.id = resD;
+  var urlShorten = new ppContent(req.body);
+  urlShorten.save().then(resp => {
+    res.status(201).send({
+      message: 'Success',
+      data: {
+        "id": resD,
+      }
+    })
+  }).catch(err => {
+    res.status(400).send({
+      message: 'Error',
+      error: 'Empty Store'
+    });
   });
-  
 };
 
 exports.getAllInformation = (req, res, next) => {
@@ -50,27 +35,54 @@ exports.getAllInformation = (req, res, next) => {
       var filterObj = [];
       resp.forEach((e) => {
         filterObj.push({
+          id: e.id,
           url: e.url,
-          shortedUrl: e.shortedUrl,
-          createdAt: e.createdAt,
-          updatedAt: e.updatedAt
-        })
+          description: e.description,
+        });
       });
-      res.send({
-        status: 200,
-        message: 'Success !!',
+      res.status(200).send({
+        message: 'Success',
         data: filterObj
       });
     } else if(err) {
-      res.send({
-        status: 400,
+      res.status(400).send({
         message: 'Err !!!',
         result: err
       });
     } else {
-      res.send({
-        status: 200,
-        message: 'No, Data found !!'
+      res.status(400).send({
+        message: "Error",
+        error: "Empty Store"
+      });
+    }
+  });
+};
+
+exports.fetchOne = (req, res, next) => {
+  // console.log(chalk.bgYellowBright("---------------- UrlShorter Information Submitted ----------------"));
+  ppContent.find({id: req.params.id}, async( err, resp) => {
+    if (Object.keys(resp).length) {
+      var filterObj = [];
+      resp.forEach((e) => {
+        filterObj.push({
+          id: e.id,
+          url: e.url,
+          description: e.description,
+        });
+      });
+      res.status(200).send({
+        message: 'Success',
+        data: filterObj
+      });
+    } else if(err) {
+      res.status(400).send({
+        message: 'Err !!!',
+        result: err
+      });
+    } else {
+      res.status(400).send({
+        message: "Error",
+        error: "Empty Store"
       });
     }
   });

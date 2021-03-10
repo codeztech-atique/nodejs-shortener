@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 // get all url shorten
-app.get('/shorten', (req, res, next) => {
+app.get('/all-urls', (req, res, next) => {
   controllers.getAllInformation(req, res);
 });
 
@@ -34,5 +34,9 @@ app.post('/shorten', [middleware.validateAPI], (req, res, next) => {
   controllers.urlShortener(req, res);
 });
 
+// Fetch Single url
+app.get('/:id', [middleware.fetchSingleDataValidateAPI], (req, res, next) => {
+  controllers.fetchOne(req, res);
+});
 
 module.exports = app;
