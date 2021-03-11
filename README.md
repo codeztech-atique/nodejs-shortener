@@ -1,13 +1,6 @@
 # nodejs-shortener
 This repo is all about url shortener with nodejs and mongodb 
 
-**URL Shortener Problem**
-
-
-If you aree having any url - https://youtube.com/c/codeztech
-Your output has to be  - https://cdpt.in/Mjg5ODAz
-
-
 **Evaluation:** <br />
 • • Database design/ Data Structure. <br />
 • • API structure with appropriate standards. <br />
